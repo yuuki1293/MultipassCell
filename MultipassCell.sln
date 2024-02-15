@@ -1,8 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsApp.Designer", "WinFormsApp.Designer\WinFormsApp.Designer.csproj", "{52507201-5783-4C79-A4B4-989689E43932}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WinFormsApp.Main", "WinFormsApp.Main\WinFormsApp.Main.fsproj", "{651C5F9C-3E35-4D77-AE52-A2FB26C47649}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52507201-5783-4C79-A4B4-989689E43932}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52507201-5783-4C79-A4B4-989689E43932}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52507201-5783-4C79-A4B4-989689E43932}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52507201-5783-4C79-A4B4-989689E43932}.Release|Any CPU.Build.0 = Release|Any CPU
+		{651C5F9C-3E35-4D77-AE52-A2FB26C47649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{651C5F9C-3E35-4D77-AE52-A2FB26C47649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{651C5F9C-3E35-4D77-AE52-A2FB26C47649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{651C5F9C-3E35-4D77-AE52-A2FB26C47649}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
