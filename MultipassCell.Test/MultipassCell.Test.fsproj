@@ -17,4 +17,8 @@
       <Content Include="Dockerfile" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\MultipassCell.Core\MultipassCell.Core.fsproj" />
+    </ItemGroup>
+
 </Project>
