@@ -31,11 +31,12 @@ type Sphere(xr: float, yr: float, zr: float, r: float) =
             let x1 = x0 + dx0 * t
             let y1 = y0 + dy0 * t
             let z1 = z0 + dz0 * t
+            let p1 = vector [x1; y1; z1]
             let xv = xr - x1
             let yv = yr - y1
             let zv = zr - z1
             let n = (this :> Mirror<float>).normal (vector [xv; yv; zv])
             let r1 = r0 - 2. * n * (dot n r0)
-            r1
+            (p1, r1)
 
         member _.normal v = unitV v
