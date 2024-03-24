@@ -27,6 +27,7 @@ type Sphere(xr: float, yr: float, zr: float, r: float) =
                 - pow2 r
             let t = (- b + sqrt ((pow2 b) - 4. * a * c)) / (2. * a)
             let t_ = (- b - sqrt ((pow2 b) - 4. * a * c)) / (2. * a)
+            let t = max t t_
             let x1 = x0 + dx0 * t
             let y1 = y0 + dy0 * t
             let z1 = z0 + dz0 * t
