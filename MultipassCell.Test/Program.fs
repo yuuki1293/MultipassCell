@@ -6,5 +6,6 @@ let sphere = Sphere(0, 0, 0, 3)
 
 let p0 = vector [1; 2; 3]
 let r0 = vector [-1; -1; -1]
-(sphere :> Mirror<float>).reflect p0 r0
+
+reflect sphere p0 r0
 |> printfn "%A"

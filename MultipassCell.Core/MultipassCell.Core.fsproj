@@ -8,6 +8,7 @@
     <ItemGroup>
       <Compile Include="Mirror.fs" />
       <Compile Include="Common\Sphere.fs" />
+      <Compile Include="Main.fs" />
     </ItemGroup>
 
     <ItemGroup>
