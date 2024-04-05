@@ -4,10 +4,15 @@ open MultipassCell.Core
 open FSharp.Stats
 open FSharp.Stats.Vector.Generic
 
-type Sphere(xr: float, yr: float, zr: float, r: float) =
+type Sphere(xr: float, yr: float, zr: float, r: float, sign_: int) =
     let pow2 x = pown x 2
     let size v = map (fun x -> x * x) v |> sum |> sqrt
     let unitV v = let s = size v in map (fun x -> x / s) v
+    let choice z0 dz0 t t_ =
+        if isNan t then nan
+        else
+            let z = z0 + dz0 * t
+            if sign z = sign_ then t else t_
     
     interface Mirror<float> with
         member this.reflect p0 r0 =
@@ -27,7 +32,7 @@ type Sphere(xr: float, yr: float, zr: float, r: float) =
                 - pow2 r
             let t = (- b + sqrt ((pow2 b) - 4. * a * c)) / (2. * a)
             let t_ = (- b - sqrt ((pow2 b) - 4. * a * c)) / (2. * a)
-            let t = max t t_
+            let t = choice z0 dz0 t t_
             let x1 = x0 + dx0 * t
             let y1 = y0 + dy0 * t
             let z1 = z0 + dz0 * t

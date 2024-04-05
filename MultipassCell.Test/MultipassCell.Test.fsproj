@@ -21,4 +21,8 @@
       <ProjectReference Include="..\MultipassCell.Core\MultipassCell.Core.fsproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Plotly.NET" Version="4.2.0" />
+    </ItemGroup>
+
 </Project>
