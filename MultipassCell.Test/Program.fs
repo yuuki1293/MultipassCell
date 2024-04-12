@@ -2,7 +2,6 @@
 open MultipassCell.Core.Common
 open FSharp.Stats
 open Plotly.NET
-open Plotly.NET.LayoutObjects
 
 let sphere_r = Sphere(0, 0, -4, 9, 1)
 let sphere_l = Sphere(0, 0, 4, 9, -1)
