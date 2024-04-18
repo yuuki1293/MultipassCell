@@ -16,11 +16,16 @@ for _ in [0..49] do
     // printfn $"%A{laser}"
     laser <- reflect sphere_l laser.Head :: laser
     // printfn $"%A{laser}"
-    
+
+let cameraEye = CameraEye.init(1.25, 1.25, -1.25)
+let cameraUp = CameraUp.init(5, 0, 0)
+let camera = Camera.init(Eye = cameraEye, Up = cameraUp)
+let scene = Scene.init(Camera = camera)
 Chart.Line3D(
     x = [ for p, _ in laser -> p[0]],
     y = [ for p, _ in laser -> p[1]],
     z = [ for p, _ in laser -> p[2]]
 )
 |> Chart.withSize(1000, 1000)
+|> Chart.withScene(scene)
 |> Chart.show
