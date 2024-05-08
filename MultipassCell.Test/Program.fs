@@ -5,11 +5,11 @@ open Plotly.NET
 open Plotly.NET.LayoutObjects
 open Plotly.NET.StyleParam
 
-let refCount = 5
-let sphere_r = Sphere(0.1, 0, -4, 9, 1)
-let sphere_l = Sphere(0, 0, 4, 9, -1)
-let p0 = vector [0.1493476; 0; -4.998761]
-let r0 = vector [0.1493476+0.1221910; 0; -4.998761-4.997257]
+let refCount = 100
+let sphere_r = Sphere(0., 0., -4, 9., 1)
+let sphere_l = Sphere(0., 0., 4, 9., -1)
+let p0 = vector [4.1231; 0; -4]
+let r0 = vector [4.1231; 4.1231; -8]
 
 let mutable laser = [(p0, r0)]
 
@@ -20,15 +20,32 @@ let rec proceed = function
 
 proceed(refCount, true)
 
+let sphere_r_list = surface sphere_r 10 (vector [5; 5]) (vector [-5; -5])
+let sphere_l_list = surface sphere_l 10 (vector [5; 5]) (vector [-5; -5])
+
+let surface xyz =
+    Chart.Surface(
+        X = (let x, _, _ = xyz in x)
+        ,Y = (let _, y, _ = xyz in y)
+        ,zData = (let _, _, z = xyz in z)
+        ,ColorScale = Colorscale.Custom(seq [0.0, Color.fromARGB 64 0 0 0; 1.0, Color.fromARGB 64 0 0 0])
+        ,ShowScale = false
+    )
+
 let cameraEye = CameraEye.init(1.25, 1.25, -1.25)
 let cameraUp = CameraUp.init(5, 0, 0)
 let camera = Camera.init(Eye = cameraEye, Up = cameraUp)
-Chart.Line3D(
+[
+    Chart.Line3D(
     x = [ for p, _ in laser -> p[0]]
     ,y = [ for p, _ in laser -> p[1]]
     ,z = [ for p, _ in laser -> p[2]]
     ,Camera = camera
-)
+    )
+    surface sphere_r_list
+    surface sphere_l_list
+]
+|> Chart.combine
 // |> Chart.withSceneStyle(AspectMode = AspectMode.Data)
 |> Chart.withSize(1000, 1000)
 |> Chart.show

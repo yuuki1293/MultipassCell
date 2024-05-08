@@ -1,4 +1,6 @@
-﻿namespace MultipassCell.Core.Common
+﻿#nowarn "0025"
+
+namespace MultipassCell.Core.Common
 
 open MultipassCell.Core
 open FSharp.Stats
@@ -45,3 +47,24 @@ type Sphere(xr: float, yr: float, zr: float, r: float, sign_: int) =
             (p1, r1)
 
         member _.normal v = unitV v
+        
+    interface Surface<float> with
+        member this.surface resolution corner1 corner2 =
+            let [|stepX; stepY|] =
+                (sub corner2 corner1)
+                |> map (fun x -> x / (float resolution))
+                |> toArray
+            
+            let xs = seq [corner1[0] .. stepX .. corner2[0]]
+            let ys = seq [corner1[1] .. stepY .. corner2[1]]
+            
+            let zs =
+                seq {
+                    for x in xs do
+                        yield seq {
+                            for y in ys do
+                                yield float sign_ * sqrt(pow2 r - pow2(x - xr) - pow2(y - yr)) + zr
+                        }
+                }
+            
+            (xs, ys, zs)
