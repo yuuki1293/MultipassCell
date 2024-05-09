@@ -15,6 +15,8 @@ type Sphere(xr: float, yr: float, zr: float, r: float, sign_: int) =
         else
             let z = z0 + dz0 * t
             if sign z = sign_ then t else t_
+            
+    new (args: float list) = Sphere(args[0], args[1], args[2], args[3], int(args[4]))
     
     interface Mirror<float> with
         member this.reflect p0 r0 =
