@@ -16,7 +16,10 @@ type Sphere(xr: float, yr: float, zr: float, r: float, sign_: int) =
             let z = z0 + dz0 * t
             if sign z = sign_ then t else t_
             
-    new (args: float list) = Sphere(args[0], args[1], args[2], args[3], int(args[4]))
+    new (args: float list) =
+        match args with
+        | xr::yr::zr::r::sign_::_ -> Sphere(float xr, float yr, float zr, float r, int sign_)
+        | _ -> failwith "too few arguments"; Sphere(0., 0., 0., 0., 0) 
     
     interface Mirror<float> with
         member this.reflect p0 r0 =
