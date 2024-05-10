@@ -16,17 +16,17 @@ let square = sample.SquareReal
 let sphere_r = Sphere (square.SphereR |> Array.map float |> Array.toList)
 let sphere_l = Sphere (square.SphereL |> Array.map float |> Array.toList)
 let p0 = solve sphere_l (square.P0 |> Array.map float |> vector)
-let p1 = solve sphere_r (square.P1 |> Array.map float |> vector)
-let r0 = p1 - p0
-
-let mutable laser = [(p0, r0)]
+let r0 =
+    let p1 = solve sphere_r (square.P1 |> Array.map float |> vector)
+    p1 - p0
 
 let rec proceed = function
-    | 0, _ -> ()
-    | count, true -> laser <- reflect sphere_r laser.Head :: laser; proceed (count-1, false)
-    | count, false -> laser <- reflect sphere_l laser.Head :: laser; proceed (count-1, true)
+    | _, 0, _ -> []
+    | pr, count, true -> pr :: proceed (reflect sphere_r pr, count - 1, false)
+    | pr, count, false -> pr :: proceed (reflect sphere_l pr, count - 1, true)
 
-proceed(refCount, true)
+let laser = proceed((p0, r0), refCount, true)
+laser |> List.map (printfn "%A") |> ignore
 
 let sphere_r_list = surface sphere_r 10 (vector [25; 25]) (vector [-25; -25])
 let sphere_l_list = surface sphere_l 10 (vector [25; 25]) (vector [-25; -25])
