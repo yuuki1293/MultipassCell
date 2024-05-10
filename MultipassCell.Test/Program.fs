@@ -26,7 +26,6 @@ let rec proceed = function
     | pr, count, false -> pr :: proceed (reflect sphere_l pr, count - 1, true)
 
 let laser = proceed((p0, r0), refCount, true)
-laser |> List.map (printfn "%A") |> ignore
 
 let sphere_r_list = surface sphere_r 10 (vector [25; 25]) (vector [-25; -25])
 let sphere_l_list = surface sphere_l 10 (vector [25; 25]) (vector [-25; -25])
