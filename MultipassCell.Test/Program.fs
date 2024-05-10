@@ -1,5 +1,4 @@
 ﻿open System.IO
-open System.Text.Json.Nodes
 open MultipassCell.Core
 open MultipassCell.Core.Common
 open FSharp.Data.JsonProvider
@@ -9,14 +8,11 @@ open Plotly.NET.LayoutObjects
 open Plotly.NET.StyleParam
 
 let refCount = 100
-let tag = "square"
 
 type Sample = JsonProvider<"./data/sample.json", EmbeddedResource="MultipassCell.Test, MultipassCell.Test.data.sample.json">
 
-let sample =
-    File.ReadAllText "./data/sample.json"
-    |> Sample.Parse 
-let square = sample |> Array.find (fun x -> x.Tag = tag)
+let sample = File.ReadAllText "./data/sample.json" |> Sample.Parse 
+let square = sample.SquareReal
 let sphere_r = Sphere (square.SphereR |> Array.map float |> Array.toList)
 let sphere_l = Sphere (square.SphereL |> Array.map float |> Array.toList)
 let p0 = solve sphere_l (square.P0 |> Array.map float |> vector)
