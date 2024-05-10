@@ -15,3 +15,9 @@ type Mirror<'T> =
     /// </summary>
     /// <param name="p">point</param>
     abstract normal: p:Vector<'T> -> Vector<'T>
+    
+    /// <summary>
+    /// Solve x, y and z from x and y
+    /// </summary>
+    /// <param name="p"></param>
+    abstract solve: p:Vector<'T> -> Vector<'T>

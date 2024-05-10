@@ -19,8 +19,9 @@ let sample =
 let square = sample |> Array.find (fun x -> x.Tag = tag)
 let sphere_r = Sphere (square.SphereR |> Array.map float |> Array.toList)
 let sphere_l = Sphere (square.SphereL |> Array.map float |> Array.toList)
-let p0 = vector (square.P0 |> Array.map float |> Array.toList)
-let r0 = vector (square.R0 |> Array.map float |> Array.toList)
+let p0 = solve sphere_l (square.P0 |> Array.map float |> vector)
+let p1 = solve sphere_r (square.P1 |> Array.map float |> vector)
+let r0 = p1 - p0
 
 let mutable laser = [(p0, r0)]
 
@@ -31,8 +32,8 @@ let rec proceed = function
 
 proceed(refCount, true)
 
-let sphere_r_list = surface sphere_r 10 (vector [5; 5]) (vector [-5; -5])
-let sphere_l_list = surface sphere_l 10 (vector [5; 5]) (vector [-5; -5])
+let sphere_r_list = surface sphere_r 10 (vector [25; 25]) (vector [-25; -25])
+let sphere_l_list = surface sphere_l 10 (vector [25; 25]) (vector [-25; -25])
 
 let surface xyz =
     Chart.Surface(

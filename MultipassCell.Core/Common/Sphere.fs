@@ -50,6 +50,11 @@ type Sphere(xr: float, yr: float, zr: float, r: float, sign_: int) =
 
         member _.normal v = unitV v
         
+        member _.solve v =
+            let x, y = v[0], v[1]
+            let z = float sign_ * sqrt(pow2 r - pow2(x - xr) - pow2(y - yr)) + zr
+            vector [|x; y; z|]
+        
     interface Surface<float> with
         member this.surface resolution corner1 corner2 =
             let [|stepX; stepY|] =
