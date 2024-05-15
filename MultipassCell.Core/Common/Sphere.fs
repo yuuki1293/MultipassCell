@@ -21,7 +21,7 @@ type Sphere(xr: float, yr: float, zr: float, r: float, sign_: int) =
         | xr::yr::zr::r::sign_::_ -> Sphere(float xr, float yr, float zr, float r, int sign_)
         | _ -> failwith "too few arguments"; Sphere(0., 0., 0., 0., 0) 
     
-    interface Mirror<float> with
+    interface Mirror with
         member this.reflect p0 r0 =
             let [|x0; y0; z0|] = p0.ToArray()
             let [|dx0; dy0; dz0|] = r0.ToArray()
@@ -38,7 +38,7 @@ type Sphere(xr: float, yr: float, zr: float, r: float, sign_: int) =
             let t = choice z0 dz0 t t_
             let p1 = p0 + r0 * t
             let pv = vector [xr; yr; zr] - p1
-            let n = (this :> Mirror<float>).normal pv
+            let n = (this :> Mirror).normal pv
             let r1 = r0 - 2. * n * (dot n r0)
             (p1, r1)
 
@@ -49,7 +49,7 @@ type Sphere(xr: float, yr: float, zr: float, r: float, sign_: int) =
             let z = float sign_ * sqrt(pow2 r - pow2(x - xr) - pow2(y - yr)) + zr
             vector [|x; y; z|]
         
-    interface Surface<float> with
+    interface Surface with
         member this.surface resolution corner1 corner2 =
             let [|stepX; stepY|] =
                 (sub corner2 corner1)
