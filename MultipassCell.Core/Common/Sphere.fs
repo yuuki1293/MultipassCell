@@ -15,7 +15,7 @@ type Sphere(pr: Vector<float>, r: float, sign_: int) =
         else
             let z = z0 + dz0 * t
             if sign z = sign_ then t else t_
-    let selfDot vec = dot vec vec
+    let dot2 vec = dot vec vec
             
     new (args: float list) =
         match args with
@@ -24,9 +24,9 @@ type Sphere(pr: Vector<float>, r: float, sign_: int) =
     
     interface Mirror with
         member this.reflect p0 r0 =
-            let a = selfDot r0
+            let a = dot2 r0
             let b = -2. * (dot r0 (pr - p0))
-            let c = selfDot (pr - p0) - pow2 r
+            let c = dot2 (pr - p0) - pow2 r
             let t = (- b + sqrt ((pow2 b) - 4. * a * c)) / (2. * a)
             let t_ = (- b - sqrt ((pow2 b) - 4. * a * c)) / (2. * a)
             let t = choice p0[2] r0[2] t t_
