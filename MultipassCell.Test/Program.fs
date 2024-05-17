@@ -1,4 +1,5 @@
-﻿open MultipassCell.Core
+﻿open System.IO
+open MultipassCell.Core
 open MultipassCell.Core.Common
 open FSharp.Data.JsonProvider
 open FSharp.Stats
@@ -10,7 +11,7 @@ let refCount = 5
 
 type Sample = JsonProvider<"./data/sample.json", EmbeddedResource="MultipassCell.Test, MultipassCell.Test.data.sample.json">
 
-let sample = Sample.GetSample()
+let sample = File.ReadAllText "./data/sample.json" |> Sample.Parse 
 let square = sample.SquareReal
 let sphere_r = Sphere (square.SphereR |> Array.map float |> Array.toList)
 let sphere_l = Sphere (square.SphereL |> Array.map float |> Array.toList)
