@@ -7,7 +7,7 @@ open Plotly.NET
 open Plotly.NET.LayoutObjects
 open Plotly.NET.StyleParam
 
-let refCount = 100
+let refCount = 5
 
 type Sample = JsonProvider<"./data/sample.json", EmbeddedResource="MultipassCell.Test, MultipassCell.Test.data.sample.json">
 
