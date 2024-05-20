@@ -1,4 +1,6 @@
-﻿namespace MultipassCell.Core.Common
+﻿#nowarn "0025"
+
+namespace MultipassCell.Core.Common
 
 open MultipassCell.Core
 open FSharp.Stats
@@ -13,15 +15,16 @@ type Sphere(xr: float, yr: float, zr: float, r: float, sign_: int) =
         else
             let z = z0 + dz0 * t
             if sign z = sign_ then t else t_
+            
+    new (args: float list) =
+        match args with
+        | xr::yr::zr::r::sign_::_ -> Sphere(float xr, float yr, float zr, float r, int sign_)
+        | _ -> failwith "too few arguments"; Sphere(0., 0., 0., 0., 0) 
     
-    interface Mirror<float> with
+    interface Mirror with
         member this.reflect p0 r0 =
-            let x0 = p0[0]
-            let y0 = p0[1]
-            let z0 = p0[2]
-            let dx0 = r0[0]
-            let dy0 = r0[1]
-            let dz0 = r0[2]
+            let [|x0; y0; z0|] = p0.ToArray()
+            let [|dx0; dy0; dz0|] = r0.ToArray()
             let a = pow2 dx0 + pow2 dy0 + pow2 dz0
             let b = -2. * (
                 dx0 * (xr - x0)
@@ -33,15 +36,36 @@ type Sphere(xr: float, yr: float, zr: float, r: float, sign_: int) =
             let t = (- b + sqrt ((pow2 b) - 4. * a * c)) / (2. * a)
             let t_ = (- b - sqrt ((pow2 b) - 4. * a * c)) / (2. * a)
             let t = choice z0 dz0 t t_
-            let x1 = x0 + dx0 * t
-            let y1 = y0 + dy0 * t
-            let z1 = z0 + dz0 * t
-            let p1 = vector [x1; y1; z1]
-            let xv = xr - x1
-            let yv = yr - y1
-            let zv = zr - z1
-            let n = (this :> Mirror<float>).normal (vector [xv; yv; zv])
+            let p1 = p0 + r0 * t
+            let pv = vector [xr; yr; zr] - p1
+            let n = (this :> Mirror).normal pv
             let r1 = r0 - 2. * n * (dot n r0)
             (p1, r1)
 
         member _.normal v = unitV v
+        
+        member _.solve v =
+            let x, y = v[0], v[1]
+            let z = float sign_ * sqrt(pow2 r - pow2(x - xr) - pow2(y - yr)) + zr
+            vector [|x; y; z|]
+        
+    interface Surface with
+        member this.surface resolution corner1 corner2 =
+            let [|stepX; stepY|] =
+                (sub corner2 corner1)
+                |> map (fun x -> x / (float resolution))
+                |> toArray
+            
+            let xs = seq [corner1[0] .. stepX .. corner2[0]]
+            let ys = seq [corner1[1] .. stepY .. corner2[1]]
+            
+            let zs =
+                seq {
+                    for x in xs do
+                        yield seq {
+                            for y in ys do
+                                yield float sign_ * sqrt(pow2 r - pow2(x - xr) - pow2(y - yr)) + zr
+                        }
+                }
+            
+            (xs, ys, zs)

@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>netstandard2.1</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Include="Types.fs" />
       <Compile Include="Mirror.fs" />
+      <Compile Include="Surface.fs" />
       <Compile Include="Common\Sphere.fs" />
       <Compile Include="Main.fs" />
     </ItemGroup>
