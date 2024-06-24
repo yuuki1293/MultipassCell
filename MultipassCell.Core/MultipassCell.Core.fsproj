@@ -11,7 +11,7 @@
       <Compile Include="Surface.fs" />
       <Compile Include="Common\Sphere.fs" />
       <Compile Include="Main.fs" />
-      <Compile Include="McManus\Vectors\Vectors.fs" />
+      <Compile Include="McManus\Vectors.fs" />
     </ItemGroup>
 
     <ItemGroup>
