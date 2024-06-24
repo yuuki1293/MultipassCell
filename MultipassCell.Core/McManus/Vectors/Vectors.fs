@@ -3,7 +3,7 @@ namespace MultipassCell.Core.McManus
 open FSharp.Stats
 
 type Vectors =
-    static member X x y z dx dy dz = vector [| x; dx / dz; y; dy / dz |]
+    static member X x y dx dy dz = vector [| x; dx / dz; y; dy / dz |]
 
     static member D d =
         matrix [| [| 1.; d; 0.; 0. |]
