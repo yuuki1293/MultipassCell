@@ -1,4 +1,4 @@
-namespace MultipassCell.Core.McManus
+namespace MultipassCell.Core.McManus.Vectors
 
 open FSharp.Stats
 
