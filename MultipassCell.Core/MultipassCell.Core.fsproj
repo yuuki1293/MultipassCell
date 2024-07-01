@@ -12,6 +12,7 @@
       <Compile Include="Common\Sphere.fs" />
       <Compile Include="Main.fs" />
       <Compile Include="McManus\Vectors.fs" />
+      <Compile Include="McManus\Cylindrical.fs" />
     </ItemGroup>
 
     <ItemGroup>
