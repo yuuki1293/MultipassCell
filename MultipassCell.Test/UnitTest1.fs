@@ -1,5 +1,6 @@
 module MultipassCell.Test.UnitTest1
 
+open MultipassCell.Core.McManus.Vectors
 open NUnit.Framework
 open MultipassCell.Test.SampleData
 open MultipassCell.Core
@@ -22,6 +23,9 @@ let SquareReal () =
         let p1 = solve sphere_r (square.P1 |> Array.map float |> vector)
         p1 - p0
 
+    let proceed =
+        let points = List.init(refCount)
+        
     let rec proceed =
         function
         | _, 0, _ -> []
@@ -67,4 +71,12 @@ let SquareReal () =
     |> Chart.withSize (1000, 1000)
     |> Chart.show
     
-    Assert.Pass()
+[<Test>]
+let ApplyD () =
+    let X = Vectors.X 0 0 2 1 1
+    let D = Vectors.D 400
+    let t = Vectors.t 1
+    
+    X.ToArray() |> printfn "X = %A\nd = 2"
+    (D * X).ToArray() |> printfn "D.X = %A"
+    (t * X).ToArray() |> printfn "t.X = %A"
