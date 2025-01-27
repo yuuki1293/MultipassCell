@@ -12,9 +12,9 @@ open Plotly.NET.StyleParam
 
 [<Test>]
 let SquareReal () =
-    let refCount = 5
+    let refCount = 18
 
-    let square = sample.SquareReal
+    let square = sample.Sample3
     let sphere_r = Sphere(square.SphereR |> Array.map float |> Array.toList)
     let sphere_l = Sphere(square.SphereL |> Array.map float |> Array.toList)
     let p0 = solve sphere_l (square.P0 |> Array.map float |> vector)
@@ -23,9 +23,6 @@ let SquareReal () =
         let p1 = solve sphere_r (square.P1 |> Array.map float |> vector)
         p1 - p0
 
-    let proceed =
-        let points = List.init(refCount)
-        
     let rec proceed =
         function
         | _, 0, _ -> []
@@ -58,6 +55,10 @@ let SquareReal () =
     let cameraUp = CameraUp.init (5, 0, 0)
     let camera = Camera.init (Eye = cameraEye, Up = cameraUp)
 
+    let toxyz sphere p =
+        let xyz = solve sphere (p |> vector)
+        xyz[0], xyz[1], xyz[2]
+
     [ Chart.Line3D(
           x = [ for p, _ in laser -> p[0] ],
           y = [ for p, _ in laser -> p[1] ],
@@ -65,18 +66,42 @@ let SquareReal () =
           Camera = camera
       )
       surface sphere_r_list
-      surface sphere_l_list ]
+      surface sphere_l_list
+      Chart.Point3D(
+          [ [ -13.806; 3.486 ]
+            [ 15.366; -2.806 ]
+            [ -11.782; 11.186 ]
+            [ 6.962; -9.714 ]
+            [ -1.002; 15.41 ]
+            [ -4.962; -10.858 ]
+            [ 10.306; 13.43 ]
+            [ -14.29; -5.754 ]
+            [ 16.73; 5.95 ] ]
+          |> List.map (toxyz sphere_r)
+      )
+      Chart.Point3D(
+          [ [ 6.062; -10.042 ]
+            [ -8.282; 14.29 ]
+            [ 15.522; -5.114 ]
+            [ -14.706; 6.898 ]
+            [ 18.25; 3.774 ]
+            [ -13.43; -2.298 ]
+            [ 13.014; 12.442 ]
+            [ -5.07; -9.03 ]
+            [ 2.278; 16.49 ] ]
+          |> List.map (toxyz sphere_l)
+      ) ]
     |> Chart.combine
     // |> Chart.withSceneStyle(AspectMode = AspectMode.Data)
     |> Chart.withSize (1000, 1000)
     |> Chart.show
-    
+
 [<Test>]
 let ApplyD () =
     let X = Vectors.X 0 0 2 1 1
     let D = Vectors.D 400
     let t = Vectors.t 1
-    
+
     X.ToArray() |> printfn "X = %A\nd = 2"
     (D * X).ToArray() |> printfn "D.X = %A"
     (t * X).ToArray() |> printfn "t.X = %A"

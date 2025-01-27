@@ -16,8 +16,9 @@ let crt =
           Generic(mr, ml, pr2) ]
 
     | McManus (D, R, t, X0) ->
-        let X1 = t.Transpose * D * R * t * X0
-        let X2 = t.Transpose * D * R * t * X1
+        let t_1 = t.Transpose
+        let X1 = t_1 * D * R * t * X0
+        let X2 = t_1 * D * R * t * X1
 
         [ McManus(D, R, t, X1)
           McManus(D, R, t, X2) ]
