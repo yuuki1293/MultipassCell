@@ -13,6 +13,7 @@
       <Compile Include="Main.fs" />
       <Compile Include="McManus\Vectors.fs" />
       <Compile Include="Crts.fs" />
+      <Compile Include="Calc.fs" />
     </ItemGroup>
 
     <ItemGroup>
