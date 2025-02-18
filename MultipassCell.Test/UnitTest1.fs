@@ -1,5 +1,6 @@
 module MultipassCell.Test.UnitTest1
 
+open MultipassCell.Core.Calc
 open MultipassCell.Core.McManus.Vectors
 open NUnit.Framework
 open MultipassCell.Test.SampleData
@@ -14,26 +15,13 @@ open Plotly.NET.StyleParam
 let SquareReal () =
     let refCount = 18
 
-    let square = sample.Sample3
+    let square = sample.Sample32
     let sphere_r = Sphere(square.SphereR |> Array.map float |> Array.toList)
     let sphere_l = Sphere(square.SphereL |> Array.map float |> Array.toList)
     let p0 = solve sphere_l (square.P0 |> Array.map float |> vector)
+    let p1 = solve sphere_l (square.P1 |> Array.map float |> vector)
 
-    let r0 =
-        let p1 = solve sphere_r (square.P1 |> Array.map float |> vector)
-        p1 - p0
-
-    let rec proceed =
-        function
-        | _, 0, _ -> []
-        | pr, count, true ->
-            pr
-            :: proceed (reflect sphere_r pr, count - 1, false)
-        | pr, count, false ->
-            pr
-            :: proceed (reflect sphere_l pr, count - 1, true)
-
-    let laser = proceed ((p0, r0), refCount, true)
+    let laser = calc sphere_r sphere_l p0 p1 refCount
 
     let sphere_r_list = surface sphere_r 10 (vector [ 25; 25 ]) (vector [ -25; -25 ])
     let sphere_l_list = surface sphere_l 10 (vector [ 25; 25 ]) (vector [ -25; -25 ])
@@ -65,18 +53,17 @@ let SquareReal () =
           z = [ for p, _ in laser -> p[2] ],
           Camera = camera
       )
-      surface sphere_r_list
-      surface sphere_l_list
+      // surface sphere_r_list
+      // surface sphere_l_list
       Chart.Point3D(
-          [ [ -13.806; 3.486 ]
-            [ 15.366; -2.806 ]
-            [ -11.782; 11.186 ]
-            [ 6.962; -9.714 ]
-            [ -1.002; 15.41 ]
-            [ -4.962; -10.858 ]
-            [ 10.306; 13.43 ]
-            [ -14.29; -5.754 ]
-            [ 16.73; 5.95 ] ]
+          [ [ 15.366; 2.806 ]
+            [ -11.782; -11.186 ]
+            [ 6.962; 9.714 ]
+            [ -1.002; -15.41 ]
+            [ -4.962; 10.858 ]
+            [ 10.306; -13.43 ]
+            [ -14.29; 5.754 ]
+            [ 16.73; -5.95 ] ]
           |> List.map (toxyz sphere_r)
       )
       Chart.Point3D(

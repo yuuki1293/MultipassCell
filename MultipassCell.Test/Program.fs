@@ -1,6 +1,7 @@
 ﻿module Program
 
 open System
+open System.IO
 open FSharp.Stats
 open FSharpPlus
 open MultipassCell.Core
@@ -26,26 +27,25 @@ type ErrResult = struct
 
 [<EntryPoint>]
 let main _ =
-    let refCount = 18
-    let square = sample.Sample3
+    let refCount = 17
+    let square = sample.Sample32
 
     let toxyz sphere (x, y) =
         let xyz = solve sphere (vector [ x; y ])
         xyz[0], xyz[1], xyz[2]
 
     let true_r =
-        [ -13.806, 3.486
-          15.366, -2.806
-          -11.782, 11.186
-          6.962, -9.714
-          -1.002, 15.41
-          -4.962, -10.858
-          10.306, 13.43
-          -14.29, -5.754
-          16.73, 5.95 ]
+        [ 15.366, 2.806
+          -11.782, -11.186
+          6.962, 9.714
+          -1.002, -15.41
+          -4.962, 10.858
+          10.306, -13.43
+          -14.29, 5.754
+          16.73, -5.95 ]
 
     let true_l =
-        [ 6.062, -10.042
+        [ 6.062, -10.0082
           -8.282, 14.29
           15.522, -5.114
           -14.706, 6.898
@@ -59,15 +59,18 @@ let main _ =
     let mutable p_sphere_r = Sphere.Zero
     let mutable p_sphere_l = Sphere.Zero
     let mutable p_laser = List.Empty
+    let mutable p_points = List.Empty
     let mutable p_true_r = List.Empty
     let mutable p_true_l = List.Empty
     
-    let min_dxr, step_dxr, max_dxr = -10.0, 2.0, 10.0
-    let min_dyr, step_dyr, max_dyr = -10.0, 2.0, 10.0
-    let min_dzr, step_dzr, max_dzr = -10.0, 2.0, 10.0
-    let min_dxl, step_dxl, max_dxl = -10.0, 2.0, 10.0
-    let min_dyl, step_dyl, max_dyl = -10.0, 2.0, 10.0
-    let min_dzl, step_dzl, max_dzl = -10.0, 2.0, 10.0
+    let logger = new StreamWriter("log.txt")
+    
+    let min_dxr, step_dxr, max_dxr = 0.0, 1.0, 0.0
+    let min_dyr, step_dyr, max_dyr = 0.0, 1.0, 0.0
+    let min_dzr, step_dzr, max_dzr = 0.0, 1.0, 0.0 // 固定する
+    let min_dxl, step_dxl, max_dxl = 0.0, 1.0, 0.0
+    let min_dyl, step_dyl, max_dyl = 0.0, 1.0, 0.0
+    let min_dzl, step_dzl, max_dzl = 0.0, 1.0, 0.0
     seq {
         for dxr in min_dxr..step_dxr..max_dxr do
         for dyr in min_dyr..step_dyr..max_dyr do
@@ -98,12 +101,14 @@ let main _ =
                 let result = ErrResult(err, dxr, dyr, dzr, dxl, dyl, dzl)
                 do
                     printfn $"%A{result.format}"
+                    fprintfn logger $"%A{result.format}"
                     if err < min_err.Err then
                         printfn "updated!"
                         min_err <- result
                         p_sphere_r <- sphere_r
                         p_sphere_l <- sphere_l
                         p_laser <- laser
+                        p_points <- points
                         p_true_r <- true_r_
                         p_true_l <- true_l_
                 return! None
@@ -112,6 +117,17 @@ let main _ =
 
     printfn $"%A{min_err.format}"
     printfn $"%A{(min_dxr, step_dxr, max_dxr, min_dyr, step_dyr, max_dyr, min_dzr, step_dzr, max_dzr, min_dxl, step_dxl, max_dxl, min_dyl, step_dyl, max_dyl, min_dzl, step_dzl, max_dzl)}"
+    
+    seq {
+        for i in 0..p_points.Length-2 ->
+            let x1, y1, z1 = p_points[i]
+            let x2, y2, z2 = p_points[i + 1]
+            [x2 - x1; y2 - y1; z2 - z1]
+            |> List.sumBy (flip pown 2)
+            |> sqrt
+    }
+    |> Seq.sum
+    |> printfn "length = %A"
     
     // render logic
     let sphere_r_list = surface p_sphere_r 10 (vector [ 25; 25 ]) (vector [ -25; -25 ])
@@ -138,14 +154,17 @@ let main _ =
           x = [ for p, _ in p_laser -> p[0] ],
           y = [ for p, _ in p_laser -> p[1] ],
           z = [ for p, _ in p_laser -> p[2] ],
-          Camera = camera
+          Camera = camera,
+          Name = "calculate"
       )
-      surface sphere_r_list
-      surface sphere_l_list
-      Chart.Point3D(p_true_r)
-      Chart.Point3D(p_true_l) ]
+      // surface sphere_r_list
+      // surface sphere_l_list
+      Chart.Point3D(p_true_r, Name = "measure front")
+      Chart.Point3D(p_true_l, Name = "measure back")
+      // Chart.Point3D([toxyz p_sphere_r (-13.806, -3.486)], Name = "rod mirror")
+    ]
     |> Chart.combine
-    // |> Chart.withSceneStyle(AspectMode = AspectMode.Data)
+    // |> Chart.withSceneStyle(AspectMode = AspectMode.Data) // 縮尺を1:1にする
     |> Chart.withSize (1000, 1000)
     |> Chart.show
     
